@@ -96,7 +96,7 @@ function normalizeDirection(directionVector) {
   }
 }
 
-function randomPoint(){
+function randomPoint() {
   let pt = new Point();
   pt.position = new Vector(Math.random() * canvas.width, Math.random() * canvas.height)
   pt.direction = new Vector(Math.random(), Math.random());
@@ -110,9 +110,9 @@ function randomPoint(){
 }
 
 const canvas = document.querySelector("canvas"),
-  canvasBounds = new Vector(window.innerWidth, window.innerHeight),
-  ctx = canvas.getContext("2d")
+  ctx = canvas.getContext("2d");
 
+let canvasBounds = new Vector(window.innerWidth, window.innerHeight);
 canvas.width = canvasBounds.x;
 canvas.height = canvasBounds.y;
 
@@ -126,11 +126,11 @@ const frame = (timestamp) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (last == null) last = timestamp;
   if (settings.pointsCount != points.length) {
-  	while(settings.pointsCount > points.length) {
-    	points.push(randomPoint())
+    while (settings.pointsCount > points.length) {
+      points.push(randomPoint())
     }
-  	while(settings.pointsCount < points.length) {
-    	points.pop()
+    while (settings.pointsCount < points.length) {
+      points.pop()
     }
   }
   let progress = timestamp - last;
@@ -151,9 +151,9 @@ document.querySelectorAll(".setting").forEach(element => {
       const settingName = element.classList[i].replace(/^setting-/, '');
       if (element.tagName.toLowerCase() == 'input') {
         if (element.type == 'checkbox') {
-					element.checked = !!settings[settingName];
+          element.checked = !!settings[settingName];
           element.addEventListener('change', () => {
-          	settings[settingName] = element.checked;
+            settings[settingName] = element.checked;
           })
         } else {
           element.value = settings[settingName];
@@ -164,4 +164,10 @@ document.querySelectorAll(".setting").forEach(element => {
       }
     }
   }
+})
+
+window.addEventListener("resize", () => {
+  canvasBounds = new Vector(window.innerWidth, window.innerHeight);
+  canvas.width = canvasBounds.x;
+  canvas.height = canvasBounds.y;
 })
