@@ -1,13 +1,35 @@
-canvas {
-  border: none;
+* {
+  overflow: hidden;
 }
 
 html,
 body {
   margin: 0;
   padding: 0;
+  font-family: monospace;
 }
 
-* {
-  overflow: hidden;
+canvas {
+  border: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 1em;
+  padding: 1em;
+  background: #e3e3e3;
+  border-radius: 5px;
+}
+
+.fadeable{
+  opacity: 0.1;
+  transition: opacity 0.5s;
+}
+.fadeable:hover {
+  opacity: 0.9;
 }
