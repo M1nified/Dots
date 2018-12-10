@@ -92,8 +92,8 @@ function normalizeDirection(directionVector) {
 }
 
 const canvas = document.querySelector("canvas"),
-  canvasBounds = new Vector(700, 700),
-  ctx = canvas.getContext("2d")
+  canvasBounds = new Vector(window.innerWidth, window.innerHeight),
+  ctx = canvas.getContext("2d");
 
 canvas.width = canvasBounds.x;
 canvas.height = canvasBounds.y;
