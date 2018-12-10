@@ -1,3 +1,8 @@
+const settings = {
+  connectionsNumber: 2,
+  addPointOnClick: true,
+  pointsCount: 100
+};
 class Vector {
   constructor(x, y) {
     this.x = x;
@@ -91,16 +96,7 @@ function normalizeDirection(directionVector) {
   }
 }
 
-const canvas = document.querySelector("canvas"),
-  canvasBounds = new Vector(window.innerWidth, window.innerHeight),
-  ctx = canvas.getContext("2d");
-
-canvas.width = canvasBounds.x;
-canvas.height = canvasBounds.y;
-
-const points = [];
-const N = 100;
-for (let i = 0; i < N; i++) {
+function randomPoint(){
   let pt = new Point();
   pt.position = new Vector(Math.random() * canvas.width, Math.random() * canvas.height)
   pt.direction = new Vector(Math.random(), Math.random());
@@ -110,21 +106,62 @@ for (let i = 0; i < N; i++) {
   pt.speed = Math.random();
   pt.speed *= .02;
   pt.speed += .04;
-  points.push(pt);
+  return pt;
+}
+
+const canvas = document.querySelector("canvas"),
+  canvasBounds = new Vector(window.innerWidth, window.innerHeight),
+  ctx = canvas.getContext("2d")
+
+canvas.width = canvasBounds.x;
+canvas.height = canvasBounds.y;
+
+const points = [];
+for (let i = 0; i < settings.pointsCount; i++) {
+  points.push(randomPoint());
 }
 
 let last = null;
 const frame = (timestamp) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (last == null) last = timestamp;
+  if (settings.pointsCount != points.length) {
+  	while(settings.pointsCount > points.length) {
+    	points.push(randomPoint())
+    }
+  	while(settings.pointsCount < points.length) {
+    	points.pop()
+    }
+  }
   let progress = timestamp - last;
   points.forEach(p => {
     p.move(progress)
       .keepInBounds(canvasBounds)
-      .printLineToClosestPointsIn(ctx, points, 3)
+      .printLineToClosestPointsIn(ctx, points, settings.connectionsNumber + 1)
       .printIn(ctx)
   })
   last = timestamp;
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+document.querySelectorAll(".setting").forEach(element => {
+  for (let i = 0; i < element.classList.length; i++) {
+    if (/^setting-/.test(element.classList[i])) {
+      const settingName = element.classList[i].replace(/^setting-/, '');
+      if (element.tagName.toLowerCase() == 'input') {
+        if (element.type == 'checkbox') {
+					element.checked = !!settings[settingName];
+          element.addEventListener('change', () => {
+          	settings[settingName] = element.checked;
+          })
+        } else {
+          element.value = settings[settingName];
+          element.addEventListener('change', () => {
+            settings[settingName] = Math.max(0, parseInt(element.value));
+          })
+        }
+      }
+    }
+  }
+})
